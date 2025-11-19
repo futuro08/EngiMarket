@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>EngiMarket — MVP Realista</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue-800:#063049;
+    --blue-600:#1e88e5;
+    --blue-400:#66b0ff;
+    --bg:#f3f8ff;
+    --card:#ffffff;
+    --muted:#6b7280;
+    --danger:#ff4d4d;
+  }
+  *{box-sizing:border-box;font-family:'Poppins',sans-serif}
+  body{margin:0;background:var(--bg);color:#0b1220;line-height:1.4}
+  header{
+    background:linear-gradient(135deg,var(--blue-800),var(--blue-600));
+    color:white;padding:12px 18px;display:flex;align-items:center;gap:18px;
+    box-shadow:0 6px 20px rgba(2,6,23,0.12);
+  }
+  .logo {
+    display:flex;align-items:center;gap:10px;
+  }
+  .mark {
+    width:54px;height:54px;border-radius:10px;background:#fff;padding:6px;display:flex;align-items:center;justify-content:center;
+    animation:float 4s ease-in-out infinite;
+  }
+  @keyframes float{
+    0%{transform:translateY(0)}
+    50%{transform:translateY(-6px) rotate(-3deg)}
+    100%{transform:translateY(0)}
+  }
+  .mark svg{width:100%;height:100%}
+  header h1{font-size:1.25rem;margin:0;font-weight:600;letter-spacing:0.4px}
+  .header-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+  .badge{background:rgba(255,255,255,0.12);padding:6px 10px;border-radius:8px;font-weight:600}
+  .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.12);color:white;padding:8px 10px;border-radius:8px;cursor:pointer}
+  .container{max-width:1100px;margin:26px auto;padding:0 16px}
+  .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(9,30,66,0.06);margin-bottom:18px}
+  .grid{display:grid;gap:16px}
+  .cols-3{grid-template-columns:1fr 360px 320px}
+  .cols-2{grid-template-columns:1fr 360px}
+  h2{color:var(--blue-800);margin:0 0 12px 0}
+  label{display:block;font-weight:600;font-size:.9rem;margin-bottom:6px;color:#16324a}
+  input[type="text"],input[type="email"],input[type="password"],input[type="number"],select,textarea,input[type="url"]{
+    width:100%;padding:10px;border-radius:8px;border:1px solid #e6eefc;background:#f8fbff;font-size:.95rem;margin-bottom:10px;
+  }
+  textarea{min-height:80px;resize:vertical}
+  .row{display:flex;gap:12px}
+  button{background:var(--blue-600);color:white;border:none;padding:10px 12px;border-radius:8px;cursor:pointer;font-weight:600}
+  button.secondary{background:#fff;color:var(--blue-600);border:1px solid #ddeffd}
+  .muted{color:var(--muted);font-size:.95rem}
+  .prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+  .prod{background:#fff;border-radius:10px;overflow:hidden;border:1px solid #eef6ff;position:relative}
+  .prod img{width:100%;height:150px;object-fit:cover;display:block}
+  .prod .info{padding:10px}
+  .prod h3{margin:0;color:var(--blue-800);font-size:1rem}
+  .prod p{margin:8px 0 0;color:#3d4b61;font-size:.9rem}
+  .price{font-weight:700;color:var(--blue-600);margin-top:8px;display:block}
+  .small-btn{padding:6px 8px;border-radius:8px;background:#f8fafd;border:1px solid #d8eefe;color:var(--blue-600);cursor:pointer;font-weight:600}
+  .danger{background:var(--danger);color:white;border:none}
+  .partner{display:flex;gap:12px;align-items:center;padding:10px;border-radius:8px;background:#f8fbff;border:1px solid #e6f0ff;margin-bottom:10px}
+  .partner img{width:72px;height:72px;border-radius:8px;object-fit:cover}
+  .footer{margin-top:30px;padding:30px 0;background:linear-gradient(180deg,#fbfdff,#eef8ff);border-top:1px solid #e6f4ff}
+  .footer .row-foot{display:flex;gap:24px;flex-wrap:wrap;justify-content:space-between;align-items:flex-start}
+  .link{color:var(--blue-800);text-decoration:none;font-weight:600}
+  .notice{border-left:4px solid var(--blue-600);background:#f0f8ff;padding:10px;border-radius:6px;margin-bottom:12px}
+  .auth-panel{max-width:420px;margin:0 auto}
+  .center{text-align:center}
+  .small{font-size:.85rem;color:var(--muted)}
+  .visual-sep{height:12px}
+  @media (max-width:980px){
+    .cols-3,.cols-2{grid-template-columns:1fr}
+    .container{padding:0 14px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+ 
+      <img src="/TESTE/logo.png" alt="Logo EngiMarket" 
+       style="width: 120px; display: block; margin: 0 auto;">
+    <div style="display:flex;flex-direction:column;line-height:1">
+      <span style="font-weight:700;color:#fff">EngiMarket</span>
+      <small style="color:rgba(255,255,255,0.9)">Conecte, compartilhe e construa!</small>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <div id="greeting" class="badge" style="display:none">Bem-vindo, <span id="gname"></span></div>
+    <button id="btnLogout" class="btn-ghost" style="display:none" onclick="logout()">Logout</button>
+    <button id="btnOpenAuth" class="btn-ghost" onclick="openAuthPanel()">Login / Cadastro</button>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- AUTH PANEL (login / signup / recover) -->
+  <div id="authPanel" class="card auth-panel" style="display:none">
+    <div id="authForms">
+      <div id="loginForm">
+        <h2 class="center">Entrar na EngiMarket</h2>
+        <label>Email</label>
+        <input id="loginEmail" type="email" placeholder="seu@exemplo.com" />
+        <label>Senha</label>
+        <input id="loginPassword" type="password" placeholder="••••••••" />
+        <div class="row" style="justify-content:space-between">
+          <button onclick="handleLogin()">Entrar</button>
+          <button class="secondary" onclick="showSignup()">Criar conta</button>
+        </div>
+        <div style="margin-top:10px" class="center small">
+          <a href="#" onclick="showRecover()">Esqueci minha senha</a>
+        </div>
+      </div>
+
+      <div id="signupForm" style="display:none">
+        <h2 class="center">Criar nova conta</h2>
+        <label>Nome completo</label>
+        <input id="signupName" type="text" placeholder="Seu nome" />
+        <label>Email</label>
+        <input id="signupEmail" type="email" placeholder="seu@exemplo.com" />
+        <label>Senha</label>
+        <input id="signupPassword" type="password" placeholder="Mínimo 6 caracteres" />
+        <label>Tipo de perfil</label>
+        <select id="signupType"><option value="comprador">Comprador</option><option value="vendedor">Vendedor</option></select>
+        <div class="row" style="justify-content:space-between">
+          <button onclick="handleSignup()">Criar conta</button>
+          <button class="secondary" onclick="showLogin()">Voltar</button>
+        </div>
+      </div>
+
+      <div id="recoverForm" style="display:none">
+        <h2 class="center">Recuperar senha (simulado)</h2>
+        <label>Informe o email cadastrado</label>
+        <input id="recoverEmail" type="email" placeholder="seu@exemplo.com" />
+        <div class="row" style="justify-content:space-between">
+          <button onclick="startRecovery()">Gerar código</button>
+          <button class="secondary" onclick="showLogin()">Voltar</button>
+        </div>
+        <div id="recoverStep2" style="display:none;margin-top:12px">
+          <label>Insira o código gerado</label>
+          <input id="recoverCode" type="text" placeholder="Código" />
+          <label>Nova senha</label>
+          <input id="recoverNewPwd" type="password" placeholder="Nova senha" />
+          <div class="row" style="justify-content:space-between">
+            <button onclick="confirmRecovery()">Alterar senha</button>
+            <button class="secondary" onclick="cancelRecovery()">Cancelar</button>
+          </div>
+          <p class="small muted">Observação: Este é um sistema de recuperação simulado — o código será mostrado na interface para fins de protótipo.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APP (hidden if not authenticated) -->
+  <div id="app" style="display:none">
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div>
+          <h2>EngiMarket - Conecte, compartilhe, construa!</h2>
+          <p class="muted">Compre e venda equipamentos, livros e componentes para estudantes e profissionais de engenharia.</p>
+        </div>
+
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="small muted">Ver como:</div>
+          <select id="viewAs" onchange="updateVisibility()">
+            <option value="default">Visitante</option>
+            <option value="me">Minha conta</option>
+          </select>
+          <select id="filterCategory" onchange="applyFilter()">
+            <option value="todos">Todas as categorias</option>
+            <option value="eletronicos">Eletrônicos</option>
+            <option value="livros">Livros</option>
+            <option value="componentes">Componentes</option>
+            <option value="ferramentas">Ferramentas</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid cols-3">
+      <!-- MAIN COLUMN: products -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h2>Produtos</h2>
+          <div class="small muted">Total: <span id="totalProducts">0</span></div>
+        </div>
+
+        <div id="productGrid" class="prod-grid" style="margin-top:12px"></div>
+        <div id="emptyProducts" class="muted small" style="display:none;margin-top:12px">Nenhum produto publicado.</div>
+      </div>
+
+      <!-- RIGHT COL: publish (only for sellers) -->
+      <div class="card" id="publishCard">
+        <h2>Publicar produto</h2>
+        <div id="sellerNotice" class="notice small muted">Você precisa ser vendedor para publicar. Faça login ou altere seu tipo no perfil.</div>
+        <div id="publishForm" style="display:none">
+          <label>Nome do produto</label><input id="pName" type="text" placeholder="Ex: Osciloscópio portátil" />
+          <label>Descrição</label><textarea id="pDesc" placeholder="Detalhes do produto"></textarea>
+          <label>Preço (R$)</label><input id="pPrice" type="number" placeholder="0.00" />
+          <label>Categoria</label>
+          <select id="pCat"><option value="eletronicos">Eletrônicos</option><option value="livros">Livros</option><option value="componentes">Componentes</option><option value="ferramentas">Ferramentas</option></select>
+          <label>Imagem</label><input id="pImg" type="file" accept="image/*" />
+          <div class="row" style="justify-content:space-between">
+            <button onclick="publishProduct()">Publicar</button>
+            <button class="secondary" onclick="clearPublish()">Limpar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PARTNERS & ACCOUNT -->
+      <div>
+        <div class="card">
+          <h2>Minha Conta</h2>
+          <div id="accountPanel">
+            <p class="muted">Você não está autenticado.</p>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button onclick="openAuthPanel()">Entrar / Criar conta</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Empresas Parceiras</h2>
+          <div id="partnersList" style="margin-top:10px"></div>
+
+          <div style="margin-top:14px;border-top:1px dashed #e6f3ff;padding-top:12px">
+            <h3 class="small">Divulgue como parceiro</h3>
+            <label>Nome da empresa</label><input id="parName" type="text" />
+            <label>Descrição</label><textarea id="parDesc"></textarea>
+            <label>Link (https://)</label><input id="parLink" type="url" />
+            <label>Imagem</label><input id="parImg" type="file" accept="image/*" />
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button onclick="addPartner()">Publicar</button>
+              <button class="secondary" onclick="clearPartner()">Limpar</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="footer card">
+      <div class="row-foot">
+        <div>
+          <h3>Sobre EngiMarket</h3>
+          <p class="small muted">EngiMarket é um protótipo de marketplace focado em estudantes e profissionais de engenharia. Use-o para testar fluxo, UX e ideias de produto.</p>
+          <p class="small">E-mail: <a class="link" href="mailto:contato@engimarket.example">contato@engimarket.com</a></p>
+        </div>
+        <div>
+          <h3>Links úteis</h3>
+          <p><a class="link" href="#"> Política de Privacidade</a></p>
+          <p><a class="link" href="#"> Termos de Uso</a></p>
+          <p><a class="link" href="#"> Ajuda</a></p>
+        </div>
+        <div>
+          <h3>Contato</h3>
+          <p class="small muted"> Avenida Ininga, 1230 — Teresina - PI</p>
+          <p class="small muted"> Tel: (086) 3204-0909</p>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- end app -->
+
+</div> <!-- end container -->
+
+<script>
+/* --------------------------
+  Simple storage helpers
+---------------------------*/
+const storage = {
+  getUsers: () => JSON.parse(localStorage.getItem('em_users')||'[]'),
+  setUsers: (v) => localStorage.setItem('em_users', JSON.stringify(v)),
+  getProducts: () => JSON.parse(localStorage.getItem('em_products')||'[]'),
+  setProducts: (v) => localStorage.setItem('em_products', JSON.stringify(v)),
+  getPartners: () => JSON.parse(localStorage.getItem('em_partners')||'[]'),
+  setPartners: (v) => localStorage.setItem('em_partners', JSON.stringify(v)),
+  getSession: () => JSON.parse(localStorage.getItem('em_session')||'null'),
+  setSession: (v) => localStorage.setItem('em_session', JSON.stringify(v)),
+  clearSession: () => localStorage.removeItem('em_session')
+}
+
+/* --------------------------
+  crypto helper: SHA-256
+---------------------------*/
+async function sha256(str){
+  if (window.crypto && crypto.subtle){
+    const enc = new TextEncoder();
+    const data = enc.encode(str);
+    const hash = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  } else {
+    // fallback (not secure): use btoa
+    return btoa(str);
+  }
+}
+
+/* --------------------------
+  Session & UI helpers
+---------------------------*/
+let currentUser = null; // {id,name,email,type}
+
+function openAuthPanel(){
+  document.getElementById('authPanel').style.display = 'block';
+  document.getElementById('btnOpenAuth').style.display = 'none';
+  document.getElementById('authPanel').scrollIntoView({behavior:'smooth'});
+  showLogin();
+}
+function closeAuthPanel(){
+  document.getElementById('authPanel').style.display = 'none';
+  document.getElementById('btnOpenAuth').style.display = (currentUser? 'none':'inline-block');
+}
+
+/* --------------------------
+  AUTH: Signup / Login / Recovery
+---------------------------*/
+function showSignup(){
+  document.getElementById('loginForm').style.display='none';
+  document.getElementById('signupForm').style.display='block';
+  document.getElementById('recoverForm').style.display='none';
+}
+function showLogin(){
+  document.getElementById('loginForm').style.display='block';
+  document.getElementById('signupForm').style.display='none';
+  document.getElementById('recoverForm').style.display='none';
+}
+function showRecover(){
+  document.getElementById('loginForm').style.display='none';
+  document.getElementById('signupForm').style.display='none';
+  document.getElementById('recoverForm').style.display='block';
+  document.getElementById('recoverStep2').style.display='none';
+}
+
+async function handleSignup(){
+  const name = document.getElementById('signupName').value.trim();
+  const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+  const pwd = document.getElementById('signupPassword').value;
+  const type = document.getElementById('signupType').value;
+
+  if (!name || !email || !pwd || pwd.length < 6){
+    alert('Preencha todos os campos. Senha mínima: 6 caracteres.');
+    return;
+  }
+  let users = storage.getUsers();
+  if (users.find(u=>u.email===email)){ alert('Email já cadastrado. Faça login ou recupere sua senha.'); return; }
+
+  const hash = await sha256(pwd);
+  const user = { id: Date.now(), name, email, passwordHash: hash, type, createdAt: new Date().toISOString() };
+  users.push(user);
+  storage.setUsers(users);
+  alert('Conta criada com sucesso! Agora você pode entrar.');
+  showLogin();
+  // prefill login
+  document.getElementById('loginEmail').value = email;
+}
+
+async function handleLogin(){
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pwd = document.getElementById('loginPassword').value;
+  if (!email || !pwd){ alert('Preencha e-mail e senha'); return; }
+  const users = storage.getUsers();
+  const user = users.find(u=>u.email===email);
+  if (!user){ alert('Usuário não encontrado.'); return; }
+  const hash = await sha256(pwd);
+  if (hash !== user.passwordHash){ alert('Senha inválida.'); return; }
+  // success
+  currentUser = { id:user.id, name:user.name, email:user.email, type:user.type };
+  storage.setSession(currentUser);
+  postAuthInit();
+  closeAuthPanel();
+  renderApp();
+}
+
+/* --------------- Recovery (simulação) ----------------*/
+function startRecovery(){
+  const email = document.getElementById('recoverEmail').value.trim().toLowerCase();
+  if (!email){ alert('Informe seu email'); return; }
+  const users = storage.getUsers();
+  const user = users.find(u=>u.email===email);
+  if (!user){ alert('Email não encontrado'); return; }
+  // generate simple 6-digit code
+  const code = Math.floor(100000 + Math.random()*900000).toString();
+  // store temporary recovery code in localStorage with expiry (5 minutes)
+  const rec = { email, code, expires: Date.now() + 5*60*1000 };
+  localStorage.setItem('em_recovery', JSON.stringify(rec));
+  alert('Código gerado (simulação): '+code);
+  // show step2
+  document.getElementById('recoverStep2').style.display='block';
+}
+
+async function confirmRecovery(){
+  const entered = document.getElementById('recoverCode').value.trim();
+  const newPwd = document.getElementById('recoverNewPwd').value;
+  const rec = JSON.parse(localStorage.getItem('em_recovery')||'null');
+  if (!rec){ alert('Nenhum pedido de recuperação encontrado.'); return; }
+  if (Date.now() > rec.expires){ alert('Código expirado. Gere um novo.'); localStorage.removeItem('em_recovery'); return; }
+  if (entered !== rec.code){ alert('Código incorreto.'); return; }
+  if (!newPwd || newPwd.length < 6){ alert('Senha inválida. Mínimo 6 caracteres.'); return; }
+  // update user
+  const users = storage.getUsers();
+  const uIndex = users.findIndex(u=>u.email===rec.email);
+  if (uIndex === -1){ alert('Usuário não encontrado'); return; }
+  users[uIndex].passwordHash = await sha256(newPwd);
+  storage.setUsers(users);
+  localStorage.removeItem('em_recovery');
+  alert('Senha atualizada com sucesso! Faça login.');
+  showLogin();
+}
+
+function cancelRecovery(){
+  localStorage.removeItem('em_recovery');
+  showLogin();
+}
+
+/* --------------------------
+  App initialization and UI updates
+---------------------------*/
+function postAuthInit(){
+  // show greeting and logout
+  if (currentUser){
+    document.getElementById('greeting').style.display='inline-block';
+    document.getElementById('gname').innerText = currentUser.name.split(' ')[0];
+    document.getElementById('btnLogout').style.display='inline-block';
+    document.getElementById('btnOpenAuth').style.display='none';
+    document.getElementById('authPanel').style.display='none';
+  }
+}
+
+function logout(){
+  if (confirm('Deseja sair da sua conta?')) {
+    currentUser = null;
+    storage.clearSession();
+    document.getElementById('greeting').style.display='none';
+    document.getElementById('btnLogout').style.display='none';
+    document.getElementById('btnOpenAuth').style.display='inline-block';
+    renderApp();
+  }
+}
+
+/* --------------------------
+  Products: publish, render, delete
+---------------------------*/
+function loadSession(){
+  const sess = storage.getSession();
+  if (sess){ currentUser = sess; }
+  postAuthInit();
+}
+
+function renderApp(){
+  // if not logged in show login prompt or allow guest view
+  const app = document.getElementById('app');
+  if (!currentUser){ 
+    // allow guest but limited: they can view but not publish
+    app.style.display = 'block';
+    document.getElementById('publishForm').style.display = 'none';
+    document.getElementById('sellerNotice').style.display = 'block';
+    document.getElementById('accountPanel').innerHTML = `<p class="muted">Conecte-se para publicar e gerenciar seus produtos.</p><div style="display:flex;gap:8px;margin-top:8px"><button onclick="openAuthPanel()">Entrar / Criar conta</button></div>`;
+  } else {
+    // show user account details
+    document.getElementById('accountPanel').innerHTML = `
+      <p><strong>${currentUser.name}</strong> — <span class="small">${currentUser.type}</span></p>
+      <p class="small muted">Email: ${currentUser.email}</p>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button onclick="showProfileEditor()">Editar perfil</button>
+        <button class="secondary" onclick="logout()">Logout</button>
+      </div>
+    `;
+    // seller publish form
+    if (currentUser.type === 'vendedor'){
+      document.getElementById('publishForm').style.display = 'block';
+      document.getElementById('sellerNotice').style.display = 'none';
+    } else {
+      document.getElementById('publishForm').style.display = 'none';
+      document.getElementById('sellerNotice').style.display = 'block';
+    }
+  }
+  // render lists
+  renderProducts();
+  renderPartners();
+  updateCounts();
+}
+
+/* publish product */
+function publishProduct(){
+  if (!currentUser || currentUser.type !== 'vendedor'){ alert('Apenas vendedores autenticados podem publicar.'); return; }
+  const name = document.getElementById('pName').value.trim();
+  const desc = document.getElementById('pDesc').value.trim();
+  const price = document.getElementById('pPrice').value;
+  const cat = document.getElementById('pCat').value;
+  const imgFile = document.getElementById('pImg').files[0];
+  if (!name || !desc || !price || !imgFile){ alert('Preencha todos os campos com imagem.'); return; }
+
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const products = storage.getProducts();
+    const prod = {
+      id: Date.now(),
+      sellerId: currentUser.id,
+      name,
+      description: desc,
+      price: parseFloat(price).toFixed(2),
+      category: cat,
+      image: e.target.result,
+      createdAt: new Date().toISOString()
+    };
+    products.unshift(prod);
+    storage.setProducts(products);
+    clearPublish();
+    renderProducts();
+    alert('Produto publicado com sucesso!');
+  };
+  reader.readAsDataURL(imgFile);
+}
+function clearPublish(){
+  document.getElementById('pName').value='';
+  document.getElementById('pDesc').value='';
+  document.getElementById('pPrice').value='';
+  document.getElementById('pImg').value='';
+}
+
+/* render products with filter and owner controls */
+function renderProducts(){
+  const products = storage.getProducts();
+  const filter = document.getElementById('filterCategory')? document.getElementById('filterCategory').value : 'todos';
+  const view = document.getElementById('viewAs')? document.getElementById('viewAs').value : 'default';
+  let list = products.slice();
+  if (filter !== 'todos') list = list.filter(p=>p.category===filter);
+  // If user selected "me" and logged in, show only my products
+  if (view === 'me' && currentUser) list = list.filter(p=>p.sellerId === currentUser.id);
+
+  const grid = document.getElementById('productGrid');
+  grid.innerHTML = '';
+  if (list.length === 0){ document.getElementById('emptyProducts').style.display = 'block'; }
+  else { document.getElementById('emptyProducts').style.display = 'none'; }
+
+  const users = storage.getUsers();
+  list.forEach(p=>{
+    const seller = users.find(u=>u.id===p.sellerId);
+    const card = document.createElement('div'); card.className='prod';
+    card.innerHTML = `
+      <img src="${p.image}" alt="${p.name}" />
+      <div class="info">
+        <h3>${escapeHtml(p.name)}</h3>
+        <p class="small">${escapeHtml(p.description)}</p>
+        <div class="price">R$ ${p.price}</div>
+        <div style="display:flex;gap:8px;margin-top:10px;align-items:center;justify-content:space-between">
+          <div class="small muted">${seller? escapeHtml(seller.name.split(' ')[0]) : 'Anúncio'}</div>
+          <div>
+            ${currentUser && currentUser.id === p.sellerId ? `<button class="small-btn danger" onclick="deleteProduct(${p.id})">Excluir</button>` : ''}
+            <button class="small-btn" onclick="viewProduct(${p.id})">Ver</button>
+          </div>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+  updateCounts();
+}
+
+function updateCounts(){
+  const products = storage.getProducts();
+  document.getElementById('totalProducts').innerText = products.length;
+}
+
+/* product actions */
+function deleteProduct(id){
+  if (!currentUser){ alert('Faça login.'); return; }
+  const products = storage.getProducts();
+  const p = products.find(x=>x.id===id);
+  if (!p){ alert('Produto não encontrado'); return; }
+  if (p.sellerId !== currentUser.id){ alert('Você só pode excluir seus próprios produtos.'); return; }
+  if (!confirm('Deseja realmente excluir este produto?')) return;
+  const newList = products.filter(x=>x.id!==id);
+  storage.setProducts(newList);
+  renderProducts();
+}
+
+/* view product modal (simple alert for MVP) */
+function viewProduct(id){
+  const products = storage.getProducts();
+  const p = products.find(x=>x.id===id);
+  if (!p) return;
+  const users = storage.getUsers();
+  const seller = users.find(u=>u.id===p.sellerId);
+  // show a simple modal-like window using window.open? We'll use a custom small popup
+  const html = `
+    <div style="padding:10px;font-family:Arial, sans-serif">
+      <h2>${escapeHtml(p.name)}</h2>
+      <img src="${p.image}" style="width:280px;height:180px;object-fit:cover;border-radius:8px;display:block;margin-bottom:10px" />
+      <p>${escapeHtml(p.description)}</p>
+      <p style="font-weight:700;color:#1e88e5">R$ ${p.price}</p>
+      <p class="small muted">Vendido por: ${seller?escapeHtml(seller.name):'Não informado'}</p>
+    </div>
+  `;
+  const win = window.open('', '_blank', 'width=360,height=480,noopener');
+  win.document.write(html);
+  win.document.title = p.name;
+}
+
+/* --------------------------
+  PARTNERS
+---------------------------*/
+function addPartner(){
+  const name = document.getElementById('parName').value.trim();
+  const desc = document.getElementById('parDesc').value.trim();
+  const link = document.getElementById('parLink').value.trim();
+  const file = document.getElementById('parImg').files[0];
+  if (!name || !desc || !link || !file){ alert('Preencha todos os campos do parceiro com imagem.'); return; }
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const partners = storage.getPartners();
+    partners.unshift({ id: Date.now(), name, description: desc, link, image: e.target.result, createdAt: new Date().toISOString() });
+    storage.setPartners(partners);
+    renderPartners();
+    clearPartner();
+    alert('Parceiro adicionado!');
+  };
+  reader.readAsDataURL(file);
+}
+function clearPartner(){ document.getElementById('parName').value='';document.getElementById('parDesc').value='';document.getElementById('parLink').value='';document.getElementById('parImg').value=''; }
+function renderPartners(){
+  const list = storage.getPartners();
+  const container = document.getElementById('partnersList');
+  container.innerHTML = '';
+  if (!list || list.length===0){ container.innerHTML = '<p class="small muted">Nenhum parceiro cadastrado.</p>'; return; }
+  list.forEach(p=>{
+    const el = document.createElement('div'); el.className='partner';
+    el.innerHTML = `<img src="${p.image}" alt="${escapeHtml(p.name)}"><div><strong>${escapeHtml(p.name)}</strong><p class="small muted" style="margin:6px 0">${escapeHtml(p.description)}</p><a class="link" href="${p.link}" target="_blank">Ver produto</a></div>`;
+    container.appendChild(el);
+  });
+}
+
+/* --------------------------
+  Profile editor (simple)
+---------------------------*/
+function showProfileEditor(){
+  if (!currentUser) return;
+  // create a small prompt-like editor
+  const users = storage.getUsers();
+  const user = users.find(u=>u.id===currentUser.id);
+  if (!user) return;
+  const newName = prompt('Editar nome:', user.name);
+  if (newName === null) return;
+  const newType = prompt('Tipo (comprador/vendedor):', user.type);
+  if (!newType) return;
+  user.name = newName.trim()||user.name;
+  if (newType==='vendedor' || newType==='comprador') user.type = newType;
+  storage.setUsers(users);
+  // update session
+  currentUser.name = user.name;
+  currentUser.type = user.type;
+  storage.setSession(currentUser);
+  postAuthInit();
+  renderApp();
+  alert('Perfil atualizado.');
+}
+
+/* --------------------------
+  Util & init
+---------------------------*/
+function applyFilter(){ renderProducts(); }
+function updateVisibility(){ renderProducts(); }
+
+function escapeHtml(str){
+  if (!str) return '';
+  return str.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
+}
+
+/* Boot */
+(function initDemoData(){
+  // seed partners and a sample seller+products if none exist (only once)
+  if (!localStorage.getItem('em_seeded')){
+    // sample users
+    const seedUsers = [
+      // password 'senha123' hashed later when first login will not match; but we'll add only if no users exist
+    ];
+    // sample partners
+    const seedPartners = [
+      { id: 1001, name:'TechMaster Equipamentos', description:'Fornecedora de instrumentos e ferramentas de precisão.', link:'#', image:'https://i.ibb.co/2k9d0Kq/partner1.jpg' },
+      { id: 1002, name:'Livros Engenharia Brasil', description:'Livros e apostilas técnicas com desconto.', link:'#', image:'https://i.ibb.co/d5VtK6k/partner2.jpg' },
+    ];
+    if (storage.getPartners().length === 0) storage.setPartners(seedPartners);
+    // mark seeded
+    localStorage.setItem('em_seeded','1');
+  }
+  // load session & render
+  loadSession();
+  renderApp();
+})();
+</script>
+
+</body>
+</html>
